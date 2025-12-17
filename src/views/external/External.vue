@@ -13,7 +13,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from 'pinia'
+import { useAccountStore } from '@/store/account'
 
 export default {
   name: 'ExternalView',
@@ -21,7 +22,7 @@ export default {
     this.clearLoggedPerson()
   },
   methods: {
-    ...mapActions(['clearLoggedPerson'])
+    ...mapActions(useAccountStore, ['clearLoggedPerson'])
   }
 }
 </script>

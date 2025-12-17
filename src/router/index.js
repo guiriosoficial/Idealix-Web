@@ -1,10 +1,9 @@
 import Vue from 'vue'
-import Router from 'vue-router'
-import Store from '@/store'
+import { useAccountStore } from '@/store/account'
+import { createRouter, createWebHistory } from 'vue-router'
 
-Vue.use(Router)
-
-const router = new Router({
+const router = createRouter({
+  history: createWebHistory(),
   routes: [
     {
       name: 'home',
@@ -40,7 +39,7 @@ const router = new Router({
       ]
     },
     {
-      path: '*',
+      path: '/:pathMatch(.*)*',
       redirect: '/'
     }
   ]
@@ -48,7 +47,8 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    Store.getters.isLoggedIn ? next() : next('login')
+    const accountStore = useAccountStore()
+    accountStore.isLoggedIn ? next() : next('login')
   } else if (from.query.token) {
     next(false)
   } else {

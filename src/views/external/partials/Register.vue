@@ -78,7 +78,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from 'pinia'
+import { useAccountStore } from '@/store/account'
 
 export default {
   name: 'RegisterView',
@@ -92,7 +93,7 @@ export default {
     useTermsDialogVisible: false
   }),
   methods: {
-    ...mapActions(['createAccount']),
+    ...mapActions(useAccountStore, ['createAccount']),
 
     handleCreateAccount () {
       this.createAccount(this.registerForm)
@@ -102,7 +103,8 @@ export default {
           this.$router.push('/login')
         })
         .catch(err => {
-          this.$toast.success('Ops! Houve um erro ao criar sua conta')
+          // Ajustei para error (estava success no seu original)
+          this.$toast.error('Ops! Houve um erro ao criar sua conta')
           console.log(err)
         })
     }

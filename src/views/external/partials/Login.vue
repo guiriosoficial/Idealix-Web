@@ -45,7 +45,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { useAccountStore } from '@/store/account'
+import { mapActions } from 'pinia'
 
 export default {
   name: 'LoginView',
@@ -57,7 +58,7 @@ export default {
     }
   }),
   methods: {
-    ...mapActions(['setLoggedPerson']),
+    ...mapActions(useAccountStore, ['setLoggedPerson']),
 
     doLogin () {
       this.setLoggedPerson(this.loginForm)

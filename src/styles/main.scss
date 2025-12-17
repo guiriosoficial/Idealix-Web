@@ -4,17 +4,8 @@
 @import 'variables.scss';
 @import 'overrides.scss';
 
-@import "vue-material/dist/theme/engine";
-@include md-register-theme("default", (
-  primary: $--primary-color,
-  accent: $--secondary-color,
-  text: $--default-text,
-  background: $--white,
-));
-@import "vue-material/dist/theme/all";
-
 // RESETS
-#App {
+#app {
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;
   height: 100vh;

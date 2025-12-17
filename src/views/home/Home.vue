@@ -160,116 +160,76 @@
 import SideMenu from '@/components/SideMenu.vue'
 import ProfileHeader from '@/components/ProfileHeader.vue'
 import { VMoney } from 'v-money'
-import { mapGetters, mapActions } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAccountStore } from '@/store/account'
+import { useChildsStore } from '@/store/childs'
+import { useAppStore } from '@/store'
+import { useHistoricStore } from '@/store/historic'
 
 export default {
   name: 'HomeView',
-  components: {
-    ProfileHeader,
-    SideMenu
-  },
+  components: { ProfileHeader, SideMenu },
   data: () => ({
-    newChildForm: {
-      name: '',
-      gender: '',
-      birthday: new Date()
-    },
-    newPointForm: {
-      childId: '',
-      weight: null,
-      height: null,
-      measurementDate: new Date()
-    },
-    numberMask: {
-      decimal: ',',
-      thousands: '.',
-      prefix: '',
-      suffix: '',
-      precision: 2,
-      masked: false
-    }
+    newChildForm: { name: '', gender: '', birthday: new Date() },
+    newPointForm: { childId: '', weight: null, height: null, measurementDate: new Date() },
+    numberMask: { decimal: ',', thousands: '.', prefix: '', suffix: '', precision: 2, masked: false }
   }),
-  directives: {
-    number: VMoney
-  },
+  directives: { number: VMoney },
+
   computed: {
-    ...mapGetters({
-      responsibleData: 'getResponsibleData',
-      childsList: 'getChildsList',
-      addChildDialogVisibel: 'addChildDialogVisibel',
-      addPointDialogVisibel: 'addPointDialogVisibel'
+    ...mapState(useAccountStore, { responsibleData: 'getResponsibleData' }),
+    ...mapState(useChildsStore, { childsList: 'getChildsList' }),
+    ...mapState(useAppStore, {
+      addChildDialogVisibel: 'addChildDialogVisible', // Note o ajuste do nome se você corrigiu na store
+      addPointDialogVisibel: 'addPointDialogVisible'
     })
   },
-  beforeMount () {
-    this.getChildsList()
-      .catch(err => {
-        this.$toast.error('Ops! Houve uma falha ao carregar a lista de crianças.')
-        console.log(err)
-      })
 
-    this.getClassification()
-      .catch(err => {
-        this.$toast.error('Ops! Houve uma falha ao carregar a as classificações.')
-        console.log(err)
-      })
+  beforeMount () {
+    this.getChildsList().catch(err => console.error(err))
+    this.getClassification().catch(err => console.error(err))
   },
+
   methods: {
-    ...mapActions([
-      'getClassification',
-      'getChildsList',
-      'addNewChild',
-      'addNewPoint',
-      'updateAddChildDialogVisibel',
-      'updateAddPointDialogVisibel'
-    ]),
+    ...mapActions(useHistoricStore, { getClassification: 'fetchClassification', addNewPoint: 'addNewPoint' }),
+    ...mapActions(useChildsStore, { getChildsList: 'fetchChildsList', addNewChild: 'addNewChild' }),
+    ...mapActions(useAppStore, {
+      updateAddChildDialogVisibel: 'toggleAddChildDialog',
+      updateAddPointDialogVisibel: 'toggleAddPointDialog'
+    }),
 
     openAddChildDialog () {
-      const { newChildForm } = this
-
-      newChildForm.name = ''
-      newChildForm.gender = ''
-      newChildForm.birthday = ''
-
+      this.newChildForm = { name: '', gender: '', birthday: '' }
       this.updateAddChildDialogVisibel(true)
     },
 
     handeAddChild () {
       const { name, gender, birthday } = this.newChildForm
-
-      this.addNewChild({
-        name,
-        gender,
-        birthday: new Date(birthday).getTime()
-      })
+      this.addNewChild({ name, gender, birthday: new Date(birthday).getTime() })
         .then(res => {
           this.$toast.success('Criança adicionada com sucesso.')
           this.$router.push(`/dashboard/${res.id}`)
           this.updateAddChildDialogVisibel(false)
         })
-        .catch(err => {
-          this.$toast.error('Ops! Houve uma falha ao adicionar esta criança.')
-          console.log(err)
-        })
+        .catch(() => this.$toast.error('Erro ao adicionar criança.'))
     },
 
     openAddPointDialog () {
-      const { newPointForm } = this
-
-      newPointForm.childId = this.$route.params.id || ''
-      newPointForm.weight = null
-      newPointForm.height = null
-      newPointForm.measurementDate = new Date()
-
+      this.newPointForm = {
+        childId: this.$route.params.id || '',
+        weight: null,
+        height: null,
+        measurementDate: new Date()
+      }
       this.updateAddPointDialogVisibel(true)
     },
 
     handleAddPoint () {
       const { childId, measurementDate, height, weight } = this.newPointForm
-
       this.addNewPoint({
         childId,
-        height: +(height.replace(',', '.')),
-        weight: +(weight.replace(',', '.')),
+        height: +(height.toString().replace(',', '.')),
+        weight: +(weight.toString().replace(',', '.')),
         measurementDate: new Date(measurementDate).getTime()
       })
         .then(res => {
@@ -277,10 +237,7 @@ export default {
           this.$router.push(`/dashboard/${res.id_child}`)
           this.updateAddPointDialogVisibel(false)
         })
-        .catch(err => {
-          this.$toast.error('Ops! Houve uma falha ao adicionar este marco.')
-          console.log(err)
-        })
+        .catch(() => this.$toast.error('Erro ao adicionar marco.'))
     }
   }
 }

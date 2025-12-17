@@ -64,117 +64,82 @@
 
 <script>
 import HistoryChart from '@/components/HistoryChart.vue'
-import { mapGetters, mapActions } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useHistoricStore } from '@/store/historic'
+import { useChildsStore } from '@/store/childs'
+import { useAppStore } from '@/store'
 
 export default {
   name: 'DashboardView',
-  components: {
-    HistoryChart
-  },
+  components: { HistoryChart },
+
   computed: {
-    ...mapGetters({
-      currentChild: 'getCurrentChild',
-      childsList: 'getChildsList'
-    }),
+    ...mapState(useHistoricStore, ['currentChild']),
+    ...mapState(useChildsStore, { childsList: 'getChildsList' }),
 
     currentChildMasked () {
-      const {
-        name,
-        age,
-        gender,
-        status,
-        height,
-        weight,
-        imc,
-        measurementDate
-      } = this.currentChild
+      const { name, age, gender, status, height, weight, imc, measurementDate } = this.currentChild
+      if (!this.currentChild.id) return {} // Early return para evitar erros de undefined
 
       return {
         name: name || '-',
         age: age >= 12 ? `${~~(age / 12)} ${~~(age / 12) === 1 ? 'Ano' : 'Anos'} e ${age % 12} ${(age % 12) === 1 ? 'Mês' : 'Meses'}` : `${age || 0} Meses`,
         gender: gender === 'm' ? 'Menino' : gender === 'f' ? 'Menina' : 'Menino(a)',
         status: status || '-',
-        measurementDate: `${('00' + new Date(measurementDate).getDate()).slice(-2)}/${('00' + (new Date(measurementDate).getMonth() + 1)).slice(-2)}/${new Date(measurementDate).getFullYear()}`,
-        height: `${height || '0.00'}m`.replace('.', ','),
-        weight: `${weight || '0.00'}Kg`.replace('.', ','),
-        imc: `IMC: ${imc || '0.00'}`.replace('.', ',')
+        measurementDate: measurementDate ? new Date(measurementDate).toLocaleDateString('pt-BR') : '-',
+        height: `${height || '0,00'}m`.replace('.', ','),
+        weight: `${weight || '0,00'}Kg`.replace('.', ','),
+        imc: `IMC: ${imc || '0,00'}`.replace('.', ',')
       }
     },
 
-    chartStyles () {
-      return {
-        flex: 1,
-        display: 'flex',
-        position: 'relative',
-        height: '100%',
-        width: '100%',
-        maxHeight: '100%',
-        maxWidth: '100%'
-      }
-    },
-
-    routerIdParam () {
-      return this.$route.params.id
-    },
+    routerIdParam () { return this.$route.params.id },
 
     emptyStateData () {
       if (!this.childsList.length) {
         return {
-          icon: 'person_add',
-          label: 'Adicione uma criança',
-          description: 'Ops, parace que você ainda não adicionou nimguém por aqui. Adicione uma criança para começar.',
-          buttonText: 'Adicionar criança',
-          buttonAction: 'updateAddChildDialogVisibel',
-          showButton: true
+          icon: 'person_add', label: 'Adicione uma criança',
+          description: 'Ops, parece que você ainda não adicionou ninguém por aqui.',
+          buttonText: 'Adicionar criança', buttonAction: 'updateAddChildDialogVisibel', showButton: true
         }
       } else if (this.routerIdParam === 'home') {
         return {
-          icon: 'child_care',
-          label: 'Bem vindo!',
-          description: 'Seleciona uma criança para ver seus dados.',
-          showButton: false,
-          class: 'md-primary'
+          icon: 'child_care', label: 'Bem vindo!',
+          description: 'Selecione uma criança para ver seus dados.',
+          showButton: false, class: 'md-primary'
         }
-      } else if (!this.currentChild.historic.length && this.childsList.map(c => c.id).includes(this.routerIdParam)) {
+      } else if (this.currentChild && !this.currentChild.historic?.length && this.childsList.map(c => c.id).includes(this.routerIdParam)) {
         return {
-          icon: 'outlined_flag',
-          label: 'Adicione o primeiro marco',
-          description: 'Esta criança ainda não possui nenhuma medição. Adicione o primeiro marco para acompanhar seu crescimento.',
-          buttonText: 'Adicionar primeiro marco',
-          buttonAction: 'updateAddPointDialogVisibel',
-          showButton: true
-        }
-      } else {
-        return {
-          icon: 'cancel_presentation',
-          label: 'Ops!',
-          description: 'Parece que esta criança não está cadastrada ou houve algum erro. Cadastre a criança ou tente novamente mais tarde.',
-          showButton: false
+          icon: 'outlined_flag', label: 'Adicione o primeiro marco',
+          description: 'Esta criança ainda não possui nenhuma medição.',
+          buttonText: 'Adicionar primeiro marco', buttonAction: 'updateAddPointDialogVisibel', showButton: true
         }
       }
+      return { icon: 'cancel_presentation', label: 'Ops!', description: 'Erro ao carregar dados.', showButton: false }
     }
   },
+
   watch: {
-    'routerIdParam' (currentId) {
+    routerIdParam (currentId) {
       this.handleGetCurrentChild(currentId)
     }
   },
+
   beforeMount () {
     this.handleGetCurrentChild(this.routerIdParam)
   },
+
   methods: {
-    ...mapActions([
-      'getCurrentChild',
-      'updateAddChildDialogVisibel',
-      'updateAddPointDialogVisibel'
-    ]),
+    ...mapActions(useHistoricStore, ['getCurrentChild']),
+    ...mapActions(useAppStore, {
+      updateAddChildDialogVisibel: 'toggleAddChildDialog',
+      updateAddPointDialogVisibel: 'toggleAddPointDialog'
+    }),
 
     handleGetCurrentChild (childId) {
-      this.getCurrentChild(childId)
-        .catch(err => {
-          this.$toast.error('Ops! Houve um erro ao carregar esta criança.')
-          console.log(err)
-        })
+      this.getCurrentChild(childId).catch(err => {
+        this.$toast.error('Erro ao carregar esta criança.')
+      })
     }
   }
 }

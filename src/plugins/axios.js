@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import axios from 'axios'
-import Router from 'vue-router'
+import { useRouter } from 'vue-router'
 
 const LOGGED_USER = JSON.parse(localStorage.getItem('iDealixLoggedPerson'))
 
 if (LOGGED_USER && LOGGED_USER.token) axios.defaults.headers.common['Authorization'] = LOGGED_USER.token
+
+const router = useRouter()
 
 const config = {
   // baseURL: process.env.VUE_APP_BASE_URL || location.origin,
@@ -39,7 +41,7 @@ _axios.interceptors.response.use(
   },
   function (error) {
     if (error.response.status === 401) {
-      Router.push('/login')
+      router.push('/login')
     }
     return Promise.reject(error)
   }

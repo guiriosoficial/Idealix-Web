@@ -1,41 +1,21 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import accountModule from './modules/account'
-import childsModule from './modules/childs'
-import historicModule from './modules/historic'
+import { defineStore } from 'pinia'
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
-  state: {
+export const useAppStore = defineStore('app', {
+  state: () => ({
     isLoading: false,
-    addChildDialogVisibel: false,
-    addPointDialogVisibel: false
-  },
-  getters: {
-    isLoading: state => state.isLoading,
-    addChildDialogVisibel: state => state.addChildDialogVisibel,
-    addPointDialogVisibel: state => state.addPointDialogVisibel
-  },
-  mutations: {
-    isoading: (state, visible) => (state.isLoading = visible),
-    updateAddChildDialogVisibel: (state, visible) => (state.addChildDialogVisibel = visible),
-    updateAddPointDialogVisibel: (state, visible) => (state.addPointDialogVisibel = visible)
-  },
+    addChildDialogVisible: false, // Corrigido erro de digitação 'Visibel'
+    addPointDialogVisible: false
+  }),
+
   actions: {
-    isoading ({ commit }, visible) {
-      commit('showLoading', visible)
+    setLoading(visible) {
+      this.isLoading = visible
     },
-    updateAddChildDialogVisibel ({ commit }, visible) {
-      commit('updateAddChildDialogVisibel', visible)
+    toggleAddChildDialog(visible) {
+      this.addChildDialogVisible = visible
     },
-    updateAddPointDialogVisibel ({ commit }, visible) {
-      commit('updateAddPointDialogVisibel', visible)
+    toggleAddPointDialog(visible) {
+      this.addPointDialogVisible = visible
     }
-  },
-  modules: {
-    accountModule,
-    childsModule,
-    historicModule
   }
 })
