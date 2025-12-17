@@ -81,7 +81,7 @@
 import { mapActions } from 'vuex'
 
 export default {
-  name: 'Register',
+  name: 'RegisterView',
   data: () => ({
     registerForm: {
       name: '',

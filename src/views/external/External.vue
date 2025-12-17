@@ -16,7 +16,7 @@
 import { mapActions } from 'vuex'
 
 export default {
-  name: 'External',
+  name: 'ExternalView',
   beforeMount () {
     this.clearLoggedPerson()
   },

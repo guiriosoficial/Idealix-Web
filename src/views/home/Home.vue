@@ -157,13 +157,13 @@
 </template>
 
 <script>
-import SideMenu from '@/components/SideMenu'
-import ProfileHeader from '@/components/ProfileHeader'
+import SideMenu from '@/components/SideMenu.vue'
+import ProfileHeader from '@/components/ProfileHeader.vue'
 import { VMoney } from 'v-money'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  name: 'Home',
+  name: 'HomeView',
   components: {
     ProfileHeader,
     SideMenu

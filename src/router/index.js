@@ -9,33 +9,33 @@ const router = new Router({
     {
       name: 'home',
       path: '/',
-      component: () => import(/* webpackChunkName: "home" */ '@/views/home/Home'),
+      component: () => import('@/views/home/Home.vue'),
       meta: { requiresAuth: true },
       redirect: 'dashboard/home',
       children: [
         {
           name: 'dashboard',
           path: '/dashboard/:id',
-          component: () => import(/* webpackChunkName: "dashboard" */ '@/views/home/partials/Dashboard')
+          component: () => import('@/views/home/partials/Dashboard.vue')
         }
       ]
     },
     {
       name: 'external',
       path: '/external',
-      component: () => import(/* webpackChunkName: "external" */ '@/views/external/External'),
+      component: () => import('@/views/external/External.vue'),
       meta: { requiresAuth: false },
       redirect: 'login',
       children: [
         {
           name: 'login',
           path: '/login',
-          component: () => import(/* webpackChunkName: "login" */ '@/views/external/partials/Login')
+          component: () => import('@/views/external/partials/Login.vue')
         },
         {
           name: 'register',
           path: '/register',
-          component: () => import(/* webpackChunkName: "register" */ '@/views/external/partials/Register')
+          component: () => import('@/views/external/partials/Register.vue')
         }
       ]
     },

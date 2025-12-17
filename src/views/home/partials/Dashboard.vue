@@ -63,11 +63,11 @@
 </template>
 
 <script>
-import HistoryChart from '@/components/HistoryChart'
+import HistoryChart from '@/components/HistoryChart.vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  name: 'Dashboard',
+  name: 'DashboardView',
   components: {
     HistoryChart
   },

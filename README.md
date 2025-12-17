@@ -11,6 +11,6 @@ Idealix é um projeto desenvolvido por estudantes do Sexto Periodo da Faculdade 
 - Versão para Celular
 - Login com Google e com Facebook
 - Botão 'Como funciona'
-- Grafco Padrao Exemplar Inicial
-- Marcasas e Validações Em Todos os Inputs
+- Gráfico Padrão Exemplar Inicial
+- Máscaras e Validações Em Todos os Inputs
 - Componente de Notificação de Erro
