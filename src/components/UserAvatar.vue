@@ -1,5 +1,5 @@
 <template>
-  <md-avatar
+  <v-avatar
     :class="size"
     class="useravatar-component">
     <img
@@ -7,9 +7,9 @@
       :src="picture"
       alt="People">
     <span v-else-if="nameInitials">{{ nameInitials.toUpperCase() }}</span>
-    <md-icon v-else-if="icon">{{ icon }}</md-icon>
+    <v-icon v-else-if="icon" :icon="icon" />
     <span v-else>-</span>
-  </md-avatar>
+  </v-avatar>
 </template>
 
 <script>
@@ -54,6 +54,6 @@ export default {
 
 .useravatar-component {
   margin-right: 8px;
-  margin-left: 0px;
+  margin-left: 0;
 }
 </style>

@@ -1,18 +1,14 @@
-import Vue from 'vue'
 import axios from 'axios'
-import { useRouter } from 'vue-router'
 
 const LOGGED_USER = JSON.parse(localStorage.getItem('iDealixLoggedPerson'))
 
-if (LOGGED_USER && LOGGED_USER.token) axios.defaults.headers.common['Authorization'] = LOGGED_USER.token
-
-const router = useRouter()
+if (LOGGED_USER?.token) {
+  axios.defaults.headers.common['Authorization'] = LOGGED_USER.token
+}
 
 const config = {
-  // baseURL: process.env.VUE_APP_BASE_URL || location.origin,
   baseURL: 'http://localhost:4000',
   timeout: 60 * 1000,
-  headers: {}
 }
 
 const _axios = axios.create(config)
@@ -21,49 +17,49 @@ _axios.CancelToken = axios.CancelToken
 _axios.isCancel = axios.isCancel
 
 _axios.interceptors.request.use(
-  function (config) {
+  config => {
+    const loggedUser = JSON.parse(localStorage.getItem('iDealixLoggedPerson'))
+    if (loggedUser?.token) {
+      config.headers.Authorization = loggedUser.token
+    }
     return config
   },
-  function (error) {
-    return Promise.reject(error)
-  }
+  error => Promise.reject(error)
 )
 
 _axios.interceptors.response.use(
-  function (response) {
-    if (response.status === 204 && response.config && !response.config.__isRetryRequest) {
+  response => {
+    if (
+      response.status === 204 &&
+      response.config &&
+      !response.config.__isRetryRequest
+    ) {
       response.config.__isRetryRequest = true
-      setTimeout(function () {
-        return axios(response.config)
-      }, 2000)
+      setTimeout(() => axios(response.config), 2000)
     }
     return response
   },
-  function (error) {
-    if (error.response.status === 401) {
-      router.push('/login')
+  error => {
+    if (error.response?.status === 401) {
+      // router será injetado
+      if (_axios._router) {
+        _axios._router.push('/login')
+      }
     }
     return Promise.reject(error)
   }
 )
 
-Plugin.install = function (Vue, options) {
-  Vue.axios = _axios
-  window.axios = _axios
-  Object.defineProperties(Vue.prototype, {
-    axios: {
-      get () {
-        return _axios
-      }
-    },
-    $axios: {
-      get () {
-        return _axios
-      }
-    }
-  })
+export const api = _axios
+
+export default {
+  install(app, { router }) {
+    // guarda referência do router
+    _axios._router = router
+
+    app.config.globalProperties.$axios = _axios
+    app.config.globalProperties.axios = _axios
+
+    window.axios = _axios
+  }
 }
-
-Vue.use(Plugin)
-
-export default Plugin

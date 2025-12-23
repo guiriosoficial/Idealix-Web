@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import { useAccountStore } from '@/store/account'
 import { createRouter, createWebHistory } from 'vue-router'
 

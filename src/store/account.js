@@ -7,8 +7,8 @@ import { useHistoricStore } from './historic'
 const resposablePath = '/responsible'
 
 const getDefaultState = () => {
-  return JSON.parse(localStorage.getItem('iDealixLoggedPerson')) ||
-    { id: '', name: '', email: '', token: '' }
+  const saved = localStorage.getItem('iDealixLoggedPerson')
+  return saved ? JSON.parse(saved) : { id: '', name: '', email: '', token: '' }
 }
 
 export const useAccountStore = defineStore('account', {
@@ -22,7 +22,7 @@ export const useAccountStore = defineStore('account', {
   actions: {
     async createAccount(params) {
       const { accepted, ...rest } = params
-      return await axiosDispatch({
+      return axiosDispatch({
         url: `${resposablePath}/register`,
         method: 'POST',
         data: rest
@@ -38,15 +38,12 @@ export const useAccountStore = defineStore('account', {
         data: data
       })
 
-      // Atualiza o estado diretamente (substitui a mutation)
       this.$patch({
         id: response.id,
         name: response.name,
         email: response.email,
         token: response.token
       })
-
-      axios.defaults.headers.common['Authorization'] = this.token
 
       if (rememberme) {
         localStorage.setItem('iDealixLoggedPerson', JSON.stringify(this.$state))

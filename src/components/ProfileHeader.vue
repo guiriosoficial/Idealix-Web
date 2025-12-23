@@ -1,28 +1,31 @@
 <template>
   <header class="profileheader-component">
-    <md-menu md-align-trigger md-direction="bottom-end" md-size="medium">
-      <div class="profileheader-component__dropdown-button md-button"  md-menu-trigger>
-        <UserAvatar
-          :name="mainNames"
-          class="profileheader-component__avatar-icon" />
-        <span class="profileheader-component__dropdown-button--text">{{ mainNames }}</span>
-        <md-icon class="profileheader-component__dropdown-button--text">arrow_drop_down</md-icon>
-      </div>
+    <v-menu location="bottom end">
+      <template v-slot:activator="{ props }">
+        <div v-bind="props" class="profileheader-component__dropdown-button">
+          <UserAvatar
+            :name="mainNames"
+            class="profileheader-component__avatar-icon" />
+          <span class="profileheader-component__dropdown-button--text">{{ mainNames }}</span>
+          <v-icon class="profileheader-component__dropdown-button--text" icon="mdi-menu-down" />
+        </div>
+      </template>
 
-      <md-menu-content>
-        <md-menu-item
+      <v-list>
+        <v-list-item
           class="profileheader-component__dropdown-item"
-          @click="doLogout">
-          <md-icon class="profileheader-component__dropdown-item--icon">directions_run</md-icon>
-          <span class="md-list-item-text">Sair</span>
-        </md-menu-item>
-      </md-menu-content>
-    </md-menu>
+          append-icon="mdi-exit-run"
+          title="Sair"
+          @click="doLogout"
+        />
+      </v-list>
+    </v-menu>
   </header>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from 'pinia'
+import { useAccountStore } from '@/store/account'
 
 export default {
   name: 'ProfileHeader',
@@ -39,9 +42,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['clearLoggedPerson']),
+    ...mapActions(useAccountStore, ['clearLoggedPerson']),
 
     doLogout () {
+      this.clearLoggedPerson()
       this.$router.push('/login')
     }
   }
@@ -78,7 +82,7 @@ export default {
     margin: 20px 20px;
 
     .profileheader-component__dropdown-button {
-      padding: 8px 0px 8px 8px;
+      padding: 8px 0 8px 8px;
       &--text { font-size: 1em; }
     }
 

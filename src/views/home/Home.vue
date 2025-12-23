@@ -15,151 +15,145 @@
       </transition>
     </main>
 
-    <md-dialog
-      :md-active.sync="addChildDialogVisibel"
-      :md-fullscreen="false"
-      class="main-container__dialogs">
-      <md-dialog-title>Adicionar uma criança</md-dialog-title>
-      <form
-        class="main-container__dialogs--form"
-        novalidate
-        @submit.prevent="validateUser">
-        <md-field>
-          <md-icon>mood</md-icon>
-          <label for="name">Nome</label>
-          <md-input
-            v-model="newChildForm.name"
-            id="name"
-            name="name" />
-        </md-field>
-        <md-field>
-          <md-icon>wc</md-icon>
-          <label for="gender">Genero</label>
-          <md-select
-            v-model="newChildForm.gender"
-            id="gender"
-            name="gender">
-            <md-option value="m">É um Menino</md-option>
-            <md-option value="f">É uma Menina</md-option>
-          </md-select>
-        </md-field>
-        <md-datepicker
-          v-model="newChildForm.birthday"
-          id="birthday"
-          name="birthday">
-          <label>Data de nascimento</label>
-        </md-datepicker>
-      </form>
-      <md-dialog-actions>
-        <md-button
-          class="md-primary"
-          @click="updateAddChildDialogVisibel(false)">
-          Cancelar
-        </md-button>
-        <md-button
-          class="md-primary md-raised"
-          @click="handeAddChild">
-          Adicionar
-        </md-button>
-      </md-dialog-actions>
-    </md-dialog>
+    <v-dialog
+      v-model="addChildDialogVisibel"
+      max-width="500"
+    >
+      <v-card title="Adicionar uma criança">
+        <v-form
+            class="main-container__dialogs--form"
+            @submit.prevent="handeAddChild">
+          <v-card-text>
+            <v-text-field label="Nome" append-icon="mood" v-model="newChildForm.name" />
+            <v-select
+                v-model="newChildForm.gender"
+                :items="[{ value: 'm', label: 'É um Menino' }, { value: 'f', label: 'É uma Menina' }]"
+                id="gender"
+                name="gender"
+                item-title="label"
+                item-value="value"
+                label="Genero"
+                prepend-inner-icon="mdi-gender-male-female"
+            />
+            <v-text-field
+                label="Data de nascimento"
+                type="date"
+                v-model="newChildForm.birthday"
+                id="birthday"
+                name="birthday">
+            </v-text-field>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+                class="md-primary"
+                @click="updateAddChildDialogVisibel(false)">
+              Cancelar
+            </v-btn>
+            <v-btn
+                class="md-primary md-raised"
+                type="submit"
+            >
+              Adicionar
+            </v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card>
+    </v-dialog>
 
-    <md-dialog
-      :md-active.sync="addPointDialogVisibel"
-      :md-fullscreen="false"
-      class="main-container__dialogs">
-      <md-dialog-title>Adicionar um marco</md-dialog-title>
-      <form
-        class="main-container__dialogs--form"
-        novalidate
-        @submit.prevent="validateUser">
-        <md-field>
-          <md-icon>mood</md-icon>
-          <label for="gender">Criança</label>
-          <md-select
-            v-model="newPointForm.childId"
-            id="child"
-            name="child">
-            <md-option
-              v-for="child in childsList"
-              :key="child.id"
-              :value="child.id">
-              <span>
-                <UserAvatar
-                :name="child.name"
-                size="md-small" />
-                {{ child.name }}
-              </span>
-            </md-option>
-          </md-select>
-        </md-field>
-        <md-field>
-          <md-icon>360</md-icon>
-          <label for="weight">Peso</label>
-          <md-input
-            v-model.lazy="newPointForm.weight"
-            v-number="numberMask"
-            id="weight"
-            name="weight" />
-          <span class="md-suffix">Kg</span>
-        </md-field>
-        <md-field>
-          <md-icon>height</md-icon>
-          <label for="height">Altura</label>
-          <md-input
-            v-model.lazy="newPointForm.height"
-            v-number="numberMask"
-            id="height"
-            name="height" />
-          <span class="md-suffix">m</span>
-        </md-field>
-        <md-datepicker
-          v-model="newPointForm.measurementDate"
-          id="date"
-          name="date">
-          <label>Data da medição</label>
-        </md-datepicker>
-      </form>
-      <md-dialog-actions>
-        <md-button
-          class="md-primary"
-          @click="updateAddPointDialogVisibel(false)">
-          Cancelar
-        </md-button>
-        <md-button
-          class="md-primary md-raised"
-          @click="handleAddPoint">
-          Adicionar
-        </md-button>
-      </md-dialog-actions>
-    </md-dialog>
+    <v-dialog
+      v-model="addPointDialogVisibel"
+      max-width="500"
+    >
+      <v-card title="Adicionar um marco">
+        <v-form
+            class="main-container__dialogs--form"
+            @submit.prevent="handleAddPoint">
 
-    <md-speed-dial class="md-bottom-right">
-      <md-speed-dial-target>
-        <md-icon>add</md-icon>
-      </md-speed-dial-target>
-      <md-speed-dial-content>
-        <md-button
-          class="md-icon-button"
-          @click="openAddChildDialog">
-          <md-icon>face</md-icon>
-          <md-tooltip md-direction="left">Adicionar Criança</md-tooltip>
-        </md-button>
-        <md-button
-          class="md-icon-button"
-          @click="openAddPointDialog">
-          <md-icon>timeline</md-icon>
-          <md-tooltip md-direction="left">Inserir Marco</md-tooltip>
-        </md-button>
-      </md-speed-dial-content>
-    </md-speed-dial>
+          <v-select
+              v-model="newPointForm.childId"
+              id="child"
+              :items="childsList"
+              item-value="id"
+              item-title="name"
+              label="Criança"
+              name="child">
+            <!--            <md-option-->
+            <!--              v-for="child in childsList"-->
+            <!--              :key="child.id"-->
+            <!--              :value="child.id">-->
+            <!--              <span>-->
+            <!--                <UserAvatar-->
+            <!--                :name="child.name"-->
+            <!--                size="md-small" />-->
+            <!--                {{ child.name }}-->
+            <!--              </span>-->
+            <!--            </md-option>-->
+          </v-select>
+          <v-text-field
+              label="Peso"
+              suffix="Kg"
+              prepend-inner-icon="mdi-scale-unbalanced"
+              v-model.lazy="newPointForm.weight"
+              v-number="numberMask"
+              id="weight"
+              name="weight" />
+          <v-text-field
+              label="Altura"
+              prepend-inner-icon="mdi-human-male-height"
+              suffix="m"
+              v-model.lazy="newPointForm.height"
+              v-number="numberMask"
+              id="height"
+              name="height" />
+          <v-text-field
+              type="date"
+              label="Data da medição"
+              v-model="newPointForm.measurementDate"
+              id="date"
+              name="date"
+          />
+          <v-card-text>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+                @click="updateAddPointDialogVisibel(false)">
+              Cancelar
+            </v-btn>
+            <v-btn
+                type="submit">
+              Adicionar
+            </v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card>
+    </v-dialog>
+
+    <v-speed-dial location="top center" transition="fade-transition">
+      <template v-slot:activator="{ props: activatorProps }">
+        <v-fab size="large" v-bind="activatorProps" icon="mdi-plus" />
+      </template>
+
+<!--      child care-->
+      <v-btn
+          icon="mdi-baby-face-outline"
+          key="chield"
+          v-tooltip:left="'Adicionar Criança'"
+          @click="openAddChildDialog"
+      />
+      <v-btn
+          icon="mdi-chart-timeline-variant"
+          key="point"
+          v-tooltip:left="'Inserir Marco'"
+          @click="openAddPointDialog"
+      />
+    </v-speed-dial>
   </div>
 </template>
 
 <script>
 import SideMenu from '@/components/SideMenu.vue'
 import ProfileHeader from '@/components/ProfileHeader.vue'
-import { VMoney } from 'v-money'
+import { VMoney } from 'v-money3'
 import { mapState, mapActions } from 'pinia'
 import { useAccountStore } from '@/store/account'
 import { useChildsStore } from '@/store/childs'

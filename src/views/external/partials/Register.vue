@@ -1,51 +1,46 @@
 <template>
   <article>
-    <form
+    <v-form
       class="register-view"
       novalidate
       @submit.prevent="handleCreateAccount">
       <h1 class="external-view__title">Cadastre-se</h1>
 
-      <md-field>
-        <label for="first-name">Nome</label>
-        <md-input
+        <v-text-field
           v-model="registerForm.name"
           id="name"
           name="name"
+          label="Nome"
           autocomplete="name" />
-      </md-field>
 
-      <md-field>
-        <label for="email">E-mail</label>
-        <md-input
+        <v-text-field
           v-model="registerForm.email"
           id="email"
+          label="E-mail"
           name="email"
           type="email"
           autocomplete="email" />
-      </md-field>
 
-      <md-field>
-        <label for="password">Senha</label>
-        <md-input
+        <v-text-field
           v-model="registerForm.password"
           id="password"
+          label="Senha"
           name="password"
           type="password" />
-      </md-field>
 
       <div class="external-view__submit">
-        <md-checkbox
+        <v-checkbox
           v-model="registerForm.accepted"
-          class="md-raised md-primary">
-          Li e aceito os
-          <a @click="useTermsDialogVisible = true">Termos de Uso</a>
-        </md-checkbox>
-        <md-button
+        >
+          <template v-slot:label>
+            Li e aceito os <a @click="userTermsDialogVisible = true">Termos de Uso</a>
+          </template>
+        </v-checkbox>
+        <v-btn
           class="md-raised md-primary"
-          @click="handleCreateAccount">
+          type="submit">
           Cadastrar
-        </md-button>
+        </v-btn>
       </div>
 
       <span class="external-view__switch-link">
@@ -54,26 +49,24 @@
           Clique aqui para acessar
         </router-link>
       </span>
-    </form>
+    </v-form>
 
-    <md-dialog :md-active.sync="useTermsDialogVisible">
-      <md-dialog-title>Termos de uso</md-dialog-title>
-      <md-content class="external-view__dialog_body md-scrollbar">
-        <p class="external-view__body-text">
-          Mussum Ipsum, cacilds vidis litro abertis. Nec orci ornare consequat. Praesent lacinia ultrices consectetur. Sed non ipsum felis. Casamentiss faiz malandris se pirulitá. Aenean aliquam molestie leo, vitae iaculis nisl. Praesent vel viverra nisi. Mauris aliquet nunc non turpis scelerisque, eget.
+    <v-dialog v-model="userTermsDialogVisible">
+      <v-card title="Termos de uso" text="Mussum Ipsum, cacilds vidis litro abertis. Nec orci ornare consequat. Praesent lacinia ultrices consectetur. Sed non ipsum felis. Casamentiss faiz malandris se pirulitá. Aenean aliquam molestie leo, vitae iaculis nisl. Praesent vel viverra nisi. Mauris aliquet nunc non turpis scelerisque, eget.
           Tá deprimidis, eu conheço uma cachacis que pode alegrar sua vidis. Manduma pindureta quium dia nois paga. Suco de cevadiss deixa as pessoas mais interessantis. Quem manda na minha terra sou euzis!
           Mé faiz elementum girarzis, nisi eros vermeio. Todo mundo vê os porris que eu tomo, mas ninguém vê os tombis que eu levo! Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis. Quem num gosta di mé, boa gentis num é.
-          Per aumento de cachacis, eu reclamis. Mauris nec dolor in eros commodo tempor. Aenean aliquam molestie leo, vitae iaculis nisl. Vehicula non. Ut sed ex eros. Vivamus sit amet nibh non tellus tristique interdum. Suco de cevadiss, é um leite divinis, qui tem lupuliz, matis, aguis e fermentis.
-        </p>
-      </md-content>
-      <md-dialog-actions>
-        <md-button
-          class="md-primary"
-          @click="useTermsDialogVisible = false">
-          Ok
-        </md-button>
-      </md-dialog-actions>
-    </md-dialog>
+          Per aumento de cachacis, eu reclamis. Mauris nec dolor in eros commodo tempor. Aenean aliquam molestie leo, vitae iaculis nisl. Vehicula non. Ut sed ex eros. Vivamus sit amet nibh non tellus tristique interdum. Suco de cevadiss, é um leite divinis, qui tem lupuliz, matis, aguis e fermentis.">
+        <template v-slot:actions>
+          <v-spacer />
+
+          <v-btn
+            class="md-primary"
+            @click="userTermsDialogVisible = false">
+            Ok
+          </v-btn>
+        </template>
+      </v-card>
+    </v-dialog>
   </article>
 </template>
 
@@ -90,7 +83,7 @@ export default {
       password: '',
       accepted: false
     },
-    useTermsDialogVisible: false
+    userTermsDialogVisible: false
   }),
   methods: {
     ...mapActions(useAccountStore, ['createAccount']),

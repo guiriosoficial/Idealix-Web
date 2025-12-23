@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { api } from '@/plugins/axios'
 
 const axiosDispatch = (params) => {
   return new Promise((resolve, reject) => {
@@ -14,13 +14,9 @@ const axiosDispatch = (params) => {
       params: params.params || null
     }
 
-    axios(opt)
-      .then(response => {
-        resolve(response.data)
-      })
-      .catch(error => {
-        reject(error)
-      })
+    api(opt) // Usa a instância configurada
+      .then(response => resolve(response.data))
+      .catch(error => reject(error))
   })
 }
 

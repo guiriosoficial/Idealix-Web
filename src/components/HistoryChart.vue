@@ -1,6 +1,7 @@
 <script>
 import { Line } from 'vue-chartjs'
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
+import { useHistoricStore } from '@/store/historic'
 
 export default {
   extends: Line,
@@ -11,7 +12,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
+    ...mapState(useHistoricStore, {
       classification: 'getClassification',
       currentChild: 'getCurrentChild'
     }),

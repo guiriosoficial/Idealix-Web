@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-view">
     <div class="dashboard-view__main-cards">
-      <md-card class="dashboard-view__details-card elevation">
+      <v-card class="dashboard-view__details-card">
         <UserAvatar
           :name="currentChild.name"
           icon="person"
@@ -12,9 +12,9 @@
           <h2>{{ currentChildMasked.name }}</h2>
           <div>{{ currentChildMasked.age }} - {{ currentChildMasked.gender }}</div>
         </div>
-      </md-card>
+      </v-card>
 
-      <md-card class="dashboard-view__details-card elevation">
+      <v-card class="dashboard-view__details-card">
         <UserAvatar
           icon="favorite"
           size="md-large"
@@ -23,9 +23,9 @@
           <h2>Status Atual</h2>
           <div>{{ currentChildMasked.status }}</div>
         </div>
-      </md-card>
+      </v-card>
 
-      <md-card class="dashboard-view__details-card elevation">
+      <v-card class="dashboard-view__details-card">
         <UserAvatar
           icon="bubble_chart"
           size="md-large"
@@ -34,31 +34,32 @@
           <h2>Último marco ({{ currentChildMasked.measurementDate }})</h2>
           <div>{{ currentChildMasked.height }} - {{ currentChildMasked.weight }} ({{ currentChildMasked.imc }})</div>
         </div>
-      </md-card>
+      </v-card>
     </div>
 
-    <md-card class="dashboard-view__chart elevation">
-      <md-empty-state
+    <v-card class="dashboard-view__chart elevation">
+      <v-empty-state
         v-if="!childsList.length || routerIdParam === 'home' || !currentChild.historic.length"
-        :md-icon="emptyStateData.icon"
-        :md-label="emptyStateData.label"
-        :md-description="emptyStateData.description"
+        :title="emptyStateData.label"
+        :text="emptyStateData.description"
+        :icon="emptyStateData.icon"
         :class="emptyStateData.class"
         class="dashboard-view__empty-state">
-        <md-button
+        <v-btn
           v-if="emptyStateData.showButton"
           class="md-primary md-raised"
           @click="emptyStateData.buttonAction === 'updateAddChildDialogVisibel' ? updateAddChildDialogVisibel(true) : updateAddPointDialogVisibel(true)">
           {{ emptyStateData.buttonText }}
-        </md-button>
-      </md-empty-state>
+        </v-btn>
+      </v-empty-state>
 
       <HistoryChart
         v-else
         class="dashboard-view__history-chart"
         :current-historic="currentChild.historic"
-        :styles="chartStyles" />
-    </md-card>
+        :styles="chartStyles"
+      />
+    </v-card>
   </div>
 </template>
 
@@ -100,19 +101,26 @@ export default {
         return {
           icon: 'person_add', label: 'Adicione uma criança',
           description: 'Ops, parece que você ainda não adicionou ninguém por aqui.',
-          buttonText: 'Adicionar criança', buttonAction: 'updateAddChildDialogVisibel', showButton: true
+          buttonText: 'Adicionar criança',
+          buttonAction: 'updateAddChildDialogVisibel',
+          showButton: true
         }
       } else if (this.routerIdParam === 'home') {
         return {
-          icon: 'child_care', label: 'Bem vindo!',
+          icon: 'child_care',
+          label: 'Bem vindo!',
           description: 'Selecione uma criança para ver seus dados.',
-          showButton: false, class: 'md-primary'
+          showButton: false,
+          class: 'md-primary'
         }
       } else if (this.currentChild && !this.currentChild.historic?.length && this.childsList.map(c => c.id).includes(this.routerIdParam)) {
         return {
-          icon: 'outlined_flag', label: 'Adicione o primeiro marco',
+          icon: 'outlined_flag',
+          label: 'Adicione o primeiro marco',
           description: 'Esta criança ainda não possui nenhuma medição.',
-          buttonText: 'Adicionar primeiro marco', buttonAction: 'updateAddPointDialogVisibel', showButton: true
+          buttonText: 'Adicionar primeiro marco',
+          buttonAction: 'updateAddPointDialogVisibel',
+          showButton: true
         }
       }
       return { icon: 'cancel_presentation', label: 'Ops!', description: 'Erro ao carregar dados.', showButton: false }

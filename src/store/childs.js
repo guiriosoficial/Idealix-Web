@@ -4,19 +4,20 @@ import axiosDispatch from './axiosDispatch'
 const childsPath = '/child'
 
 export const useChildsStore = defineStore('childs', {
-  state: () => ([]),
+  state: () => ({
+    list: []
+  }),
 
   getters: {
     // Pinia permite usar 'this' para acessar outras getters
-    getChildsList: (state) => [...state].sort((a, b) => a.name.localeCompare(b.name)),
+    getChildsList: (state) => [...state.list].sort((a, b) => a.name.localeCompare(b.name)),
     getChildsLength: (state) => state.length
   },
 
   actions: {
     async fetchChildsList() {
       const data = await axiosDispatch({ url: childsPath })
-      this.length = 0 // limpa a lista
-      this.push(...data)
+      this.list = data
       return data
     },
 
@@ -26,12 +27,12 @@ export const useChildsStore = defineStore('childs', {
         method: 'POST',
         data: newChild
       })
-      this.push(response)
+      this.list.push(response)
       return response
     },
 
     clearChildsList() {
-      this.$state = []
+      this.list = []
     }
   }
 })

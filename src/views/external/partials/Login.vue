@@ -1,47 +1,43 @@
 <template>
-  <form
+  <v-form
     class="login-view"
     novalidate
-    @submit.prevent="doLogin">
+    @submit.prevent="doLogin"
+  >
     <h1 class="external-view__title">Login</h1>
 
-    <md-field>
-      <label for="email">E-mail</label>
-      <md-input
-        v-model="loginForm.email"
-        id="email"
-        name="email"
-        type="email"
-        autocomplete="email" />
-    </md-field>
+    <v-text-field
+      v-model="loginForm.email"
+      label="E-mail"
+      type="email"
+      autocomplete="email"
+    />
 
-    <md-field>
-      <label for="password">Senha</label>
-      <md-input
-        v-model="loginForm.password"
-        id="password"
-        name="password"
-        type="password" />
-    </md-field>
+    <v-text-field
+      v-model="loginForm.password"
+      label="Password"
+      type="password"
+      autocomplete="password"
+    />
 
     <div class="external-view__submit">
-      <md-checkbox
+      <v-checkbox
         v-model="loginForm.rememberme"
-        class="md-raised md-primary">
-        Lembre-se de mim
-      </md-checkbox>
-      <md-button
-        class="md-raised md-primary"
-        @click="doLogin">
+        label="Lembre-se de mim"
+      />
+      <v-btn
+        color="primary"
+        type="submit"
+      >
         Entrar
-      </md-button>
+      </v-btn>
     </div>
 
     <span class="external-view__switch-link">
       Não possui uma conta?
       <router-link to="/register">Cadastre-se agora mesmo</router-link>
     </span>
-  </form>
+  </v-form>
 </template>
 
 <script>

@@ -11,25 +11,21 @@
     </label>
     <div class="sidemenu-component__container elevation">
       <h1 class="sidemenu-component__title">iDealix</h1>
-      <md-list class="sidemenu-component__menu-items">
-        <md-subheader>Ações</md-subheader>
-        <md-list-item @click="$emit('open-add-child-dialog')">
-          <md-icon>face</md-icon>
-          <span class="md-list-item-text">Adicionar Criança</span>
-        </md-list-item>
-        <md-list-item @click="$emit('open-add-point-dialog')">
-          <md-icon>timeline</md-icon>
-          <span class="md-list-item-text">Inserir Marco</span>
-        </md-list-item>
-        <md-subheader>Crianças</md-subheader>
-        <md-list-item
+      <v-list class="sidemenu-component__menu-items">
+        <v-list-subheader inset>Ações</v-list-subheader>
+        <v-list-item title="Adicionar Criança" prepend-icon="mdi-baby-face-outline" @click="$emit('open-add-child-dialog')" />
+        <v-list-item title="Inserir Marco" prepend-icon="mdi-chart-timeline-variant" @click="$emit('open-add-point-dialog')" />
+        <v-list-subheader inset>Crianças</v-list-subheader>
+        <v-list-item
           v-for="child in childsList"
           :key="child.id"
           :to="`/dashboard/${child.id}`">
-          <UserAvatar :name="child.name" />
+          <template v-slot:prepend>
+            <UserAvatar :name="child.name" />
+          </template>
           <span class="md-list-item-text">{{ child.name }}</span>
-        </md-list-item>
-      </md-list>
+        </v-list-item>
+      </v-list>
     </div>
   </div>
 </template>
