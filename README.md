@@ -1,11 +1,20 @@
-# Idealix-Web
-Idealix é um projeto desenvolvido por estudantes do Sexto Periodo da Faculdade Bilac para a matéria de Projeto de Software, com o tema de Saúde Infantil. O Projeto se propoe a criar um sistema de medição de IMC com respostas de saúde, além de registro de histórico.
+# iDealix-Web
+iDealix é um projeto desenvolvido por estudantes do Sexto Periodo do Centro Universitário ETEP para a matéria de Projeto de Software, com o tema de Saúde Infantil.
+O Projeto se propõe a criar um sistema de medição de IMC com respostas de saúde, além de registros de históricos.
 
 ## Project Setup
-- **Requirements:** `Node` and `NPM` installed
-- **Install Dependencies:** `npm install`
-- **Start Development Server:** `npm start`
-- **Compiles For Production:** `npm run build`
+- **Install Dependencies:**
+```shell
+npm install
+```
+- **Start Development Server:**
+```shell
+npm run dev
+```
+- **Compiles For Production:**
+```shell
+npm run build
+```
 
 ### Debito Técnico
 - Versão para Celular
@@ -14,3 +23,8 @@ Idealix é um projeto desenvolvido por estudantes do Sexto Periodo da Faculdade 
 - Gráfico Padrão Exemplar Inicial
 - Máscaras e Validações Em Todos os Inputs
 - Componente de Notificação de Erro
+
+## TODO
+- Abstrair Componentes
+- Implementar Typescript
+- Criar Testes
