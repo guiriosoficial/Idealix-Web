@@ -6,12 +6,6 @@
   </v-app>
 </template>
 
-<script>
-export default {
-  name: 'App'
-}
-</script>
-
 <style lang="scss">
 .fade-enter-active, .fade-leave-active {
 transition: opacity .3s;

@@ -30,16 +30,12 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'SideMenu',
-  props: {
-    childsList: {
-      type: Array,
-      default: () => []
-    }
-  }
+<script setup lang="ts">
+interface ISideMeniProps {
+  childsList: []
 }
+
+const { childsList = [] } = defineProps()
 </script>
 
 <style lang="scss">

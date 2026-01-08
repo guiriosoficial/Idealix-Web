@@ -70,38 +70,39 @@
   </article>
 </template>
 
-<script>
-import { mapActions } from 'pinia'
+<script setup lang="ts">
 import { useAccountStore } from '@/store/account'
+import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useToast } from 'vue-toast-notification'
 
-export default {
-  name: 'RegisterView',
-  data: () => ({
-    registerForm: {
-      name: '',
-      email: '',
-      password: '',
-      accepted: false
-    },
-    userTermsDialogVisible: false
-  }),
-  methods: {
-    ...mapActions(useAccountStore, ['createAccount']),
+const accountStore = useAccountStore()
+const router = useRouter()
+const toast = useToast()
 
-    handleCreateAccount () {
-      this.createAccount(this.registerForm)
-        .then(res => {
-          this.registerForm = { name: '', email: '', password: '', accepted: false }
-          this.$toast.success('Sua conta foi criada')
-          this.$router.push('/login')
-        })
-        .catch(err => {
-          // Ajustei para error (estava success no seu original)
-          this.$toast.error('Ops! Houve um erro ao criar sua conta')
-          console.log(err)
-        })
-    }
-  }
+const userTermsDialogVisible = ref(false)
+const registerForm = reactive({
+  name: '',
+  email: '',
+  password: '',
+  accepted: false
+})
+
+function handleCreateAccount () {
+  accountStore.createAccount(registerForm)
+    .then(() => {
+      Object.assign(registerForm, {
+        name: '',
+        email: '',
+        password: '',
+        accepted: false
+      })
+      toast.success('Sua conta foi criada')
+      router.push('/login')
+    })
+    .catch(() => {
+      toast.error('Ops! Houve um erro ao criar sua conta')
+    })
 }
 </script>
 

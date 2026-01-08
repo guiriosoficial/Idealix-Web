@@ -23,32 +23,28 @@
   </header>
 </template>
 
-<script>
-import { mapActions } from 'pinia'
+<script setup lang="ts">
 import { useAccountStore } from '@/store/account'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 
-export default {
-  name: 'ProfileHeader',
-  props: {
-    responsibleData: {
-      type: Object,
-      required: true
-    }
-  },
-  computed: {
-    mainNames () {
-      const fullName = this.responsibleData.name.split(' ')
-      return `${fullName[0]} ${fullName[fullName.length - 1]}`
-    }
-  },
-  methods: {
-    ...mapActions(useAccountStore, ['clearLoggedPerson']),
+interface IProfileHeaderProps {
+  responsibleData: Object
+}
 
-    doLogout () {
-      this.clearLoggedPerson()
-      this.$router.push('/login')
-    }
-  }
+const router = useRouter()
+const accountStore = useAccountStore()
+
+const { responsibleData } = defineProps<IProfileHeaderProps>()
+
+const mainNames = computed(() => {
+  const fullName = responsibleData.name.split(' ')
+  return `${fullName[0]} ${fullName[fullName.length - 1]}`
+})
+
+function doLogout () {
+  accountStore.clearLoggedPerson()
+  router.push('/login')
 }
 </script>
 

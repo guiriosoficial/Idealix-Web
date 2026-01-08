@@ -12,19 +12,15 @@
   </div>
 </template>
 
-<script>
-import { mapActions } from 'pinia'
+<script setup lang="ts">
 import { useAccountStore } from '@/store/account'
+import { onBeforeMount } from 'vue'
 
-export default {
-  name: 'ExternalView',
-  beforeMount () {
-    this.clearLoggedPerson()
-  },
-  methods: {
-    ...mapActions(useAccountStore, ['clearLoggedPerson'])
-  }
-}
+const accountStore = useAccountStore()
+
+onBeforeMount(() => {
+  accountStore.clearLoggedPerson()
+})
 </script>
 
 <style lang="scss">

@@ -12,41 +12,34 @@
   </v-avatar>
 </template>
 
-<script>
-export default {
-  name: 'UserAvatar',
-  props: {
-    name: {
-      type: String,
-      default: ''
-    },
-    picture: {
-      type: String,
-      default: ''
-    },
-    icon: {
-      type: String,
-      default: ''
-    },
-    size: {
-      type: String,
-      default: ''
-    }
-  },
-  computed: {
-    nameInitials () {
-      if (this.name && this.name.trim()) {
-        let split = this.name.split(' ').filter(Boolean)
-        if (split.length > 1) {
-          return split[0].substring(0, 1) + split[split.length - 1].substring(0, 1)
-        } else if (split.length === 1) {
-          return split[0].substring(0, 2)
-        }
-      }
-      return ''
+<script setup lang="ts">
+import { computed } from 'vue'
+
+interface IUserAvatarProps {
+  name?: string,
+  picture?: string,
+  icon?: string,
+  size?: string
+}
+
+const {
+  name = '',
+  picture = '',
+  icon = '',
+  size = ''
+} = defineProps<IUserAvatarProps>()
+
+const nameInitials = computed(() => {
+  if (name && name.trim()) {
+    let split = name.split(' ').filter(Boolean)
+    if (split.length > 1) {
+      return split[0].substring(0, 1) + split[split.length - 1].substring(0, 1)
+    } else if (split.length === 1) {
+      return split[0].substring(0, 2)
     }
   }
-}
+  return ''
+})
 </script>
 
 <style lang="scss">

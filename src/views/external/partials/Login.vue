@@ -40,32 +40,29 @@
   </v-form>
 </template>
 
-<script>
+<script setup lang="ts">
 import { useAccountStore } from '@/store/account'
-import { mapActions } from 'pinia'
+import { useRouter } from 'vue-router'
+import { reactive } from 'vue'
+import { useToast } from 'vue-toast-notification'
 
-export default {
-  name: 'LoginView',
-  data: () => ({
-    loginForm: {
-      email: '',
-      password: '',
-      rememberme: false
-    }
-  }),
-  methods: {
-    ...mapActions(useAccountStore, ['setLoggedPerson']),
+const accounteStore = useAccountStore()
+const router = useRouter()
+const toast = useToast()
 
-    doLogin () {
-      this.setLoggedPerson(this.loginForm)
-        .then(res => {
-          this.$router.push('dashboard')
-        })
-        .catch(err => {
-          this.$toast.error('Ops! Houve uma falha ao fazer login')
-          console.log(err)
-        })
-    }
-  }
+const loginForm = reactive({
+  email: '',
+  password: '',
+  rememberme: false
+})
+
+function doLogin () {
+  accounteStore.setLoggedPerson(loginForm)
+    .then(() => {
+      router.push('dashboard')
+    })
+    .catch(() => {
+      toast.error('Ops! Houve uma falha ao fazer login')
+    })
 }
 </script>

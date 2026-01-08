@@ -63,93 +63,90 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import HistoryChart from '@/components/HistoryChart.vue'
-import { mapState, mapActions } from 'pinia'
 import { useHistoricStore } from '@/store/historic'
 import { useChildsStore } from '@/store/childs'
 import { useAppStore } from '@/store'
+import { computed, onBeforeMount, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { useToast } from 'vue-toast-notification'
+import { storeToRefs } from "pinia";
 
-export default {
-  name: 'DashboardView',
-  components: { HistoryChart },
+const historicStore = useHistoricStore()
+const childsStore = useChildsStore()
+const appStore = useAppStore()
+const route = useRoute()
+const toast = useToast()
 
-  computed: {
-    ...mapState(useHistoricStore, ['currentChild']),
-    ...mapState(useChildsStore, { childsList: 'getChildsList' }),
+const { getChildsList: childsList } = childsStore
+const {
+  toggleAddChildDialog: updateAddChildDialogVisibel,
+  toggleAddPointDialog: updateAddPointDialogVisibel
+} = appStore
 
-    currentChildMasked () {
-      const { name, age, gender, status, height, weight, imc, measurementDate } = this.currentChild
-      if (!this.currentChild.id) return {} // Early return para evitar erros de undefined
+const { currentChild } = storeToRefs(historicStore)
 
-      return {
-        name: name || '-',
-        age: age >= 12 ? `${~~(age / 12)} ${~~(age / 12) === 1 ? 'Ano' : 'Anos'} e ${age % 12} ${(age % 12) === 1 ? 'Mês' : 'Meses'}` : `${age || 0} Meses`,
-        gender: gender === 'm' ? 'Menino' : gender === 'f' ? 'Menina' : 'Menino(a)',
-        status: status || '-',
-        measurementDate: measurementDate ? new Date(measurementDate).toLocaleDateString('pt-BR') : '-',
-        height: `${height || '0,00'}m`.replace('.', ','),
-        weight: `${weight || '0,00'}Kg`.replace('.', ','),
-        imc: `IMC: ${imc || '0,00'}`.replace('.', ',')
-      }
-    },
+const currentChildMasked = computed(() => {
+  const { name, age, gender, status, height, weight, imc, measurementDate } = currentChild
+  if (!currentChild.id) return {}
 
-    routerIdParam () { return this.$route.params.id },
+  return {
+    name: name || '-',
+    age: age >= 12 ? `${~~(age / 12)} ${~~(age / 12) === 1 ? 'Ano' : 'Anos'} e ${age % 12} ${(age % 12) === 1 ? 'Mês' : 'Meses'}` : `${age || 0} Meses`,
+    gender: gender === 'm' ? 'Menino' : gender === 'f' ? 'Menina' : 'Menino(a)',
+    status: status || '-',
+    measurementDate: measurementDate ? new Date(measurementDate).toLocaleDateString('pt-BR') : '-',
+    height: `${height || '0,00'}m`.replace('.', ','),
+    weight: `${weight || '0,00'}Kg`.replace('.', ','),
+    imc: `IMC: ${imc || '0,00'}`.replace('.', ',')
+  }
+})
 
-    emptyStateData () {
-      if (!this.childsList.length) {
-        return {
-          icon: 'person_add', label: 'Adicione uma criança',
-          description: 'Ops, parece que você ainda não adicionou ninguém por aqui.',
-          buttonText: 'Adicionar criança',
-          buttonAction: 'updateAddChildDialogVisibel',
-          showButton: true
-        }
-      } else if (this.routerIdParam === 'home') {
-        return {
-          icon: 'child_care',
-          label: 'Bem vindo!',
-          description: 'Selecione uma criança para ver seus dados.',
-          showButton: false,
-          class: 'md-primary'
-        }
-      } else if (this.currentChild && !this.currentChild.historic?.length && this.childsList.map(c => c.id).includes(this.routerIdParam)) {
-        return {
-          icon: 'outlined_flag',
-          label: 'Adicione o primeiro marco',
-          description: 'Esta criança ainda não possui nenhuma medição.',
-          buttonText: 'Adicionar primeiro marco',
-          buttonAction: 'updateAddPointDialogVisibel',
-          showButton: true
-        }
-      }
-      return { icon: 'cancel_presentation', label: 'Ops!', description: 'Erro ao carregar dados.', showButton: false }
+const routerIdParam = computed(() => route.params.id)
+
+const emptyStateData = computed(() => {
+  if (!childsList.length) {
+    return {
+      icon: 'person_add', label: 'Adicione uma criança',
+      description: 'Ops, parece que você ainda não adicionou ninguém por aqui.',
+      buttonText: 'Adicionar criança',
+      buttonAction: 'updateAddChildDialogVisibel',
+      showButton: true
     }
-  },
-
-  watch: {
-    routerIdParam (currentId) {
-      this.handleGetCurrentChild(currentId)
+  } else if (routerIdParam === 'home') {
+    return {
+      icon: 'child_care',
+      label: 'Bem vindo!',
+      description: 'Selecione uma criança para ver seus dados.',
+      showButton: false,
+      class: 'md-primary'
     }
-  },
-
-  beforeMount () {
-    this.handleGetCurrentChild(this.routerIdParam)
-  },
-
-  methods: {
-    ...mapActions(useHistoricStore, ['getCurrentChild']),
-    ...mapActions(useAppStore, {
-      updateAddChildDialogVisibel: 'toggleAddChildDialog',
-      updateAddPointDialogVisibel: 'toggleAddPointDialog'
-    }),
-
-    handleGetCurrentChild (childId) {
-      this.getCurrentChild(childId).catch(err => {
-        this.$toast.error('Erro ao carregar esta criança.')
-      })
+  } else if (currentChild && !currentChild.historic?.length && childsList.map(c => c.id).includes(routerIdParam.value)) {
+    return {
+      icon: 'outlined_flag',
+      label: 'Adicione o primeiro marco',
+      description: 'Esta criança ainda não possui nenhuma medição.',
+      buttonText: 'Adicionar primeiro marco',
+      buttonAction: 'updateAddPointDialogVisibel',
+      showButton: true
     }
   }
+  return { icon: 'cancel_presentation', label: 'Ops!', description: 'Erro ao carregar dados.', showButton: false }
+})
+
+watch(() => routerIdParam, (currentId) => {
+  handleGetCurrentChild(currentId.value)
+})
+
+onBeforeMount(() => {
+  handleGetCurrentChild(routerIdParam.value)
+})
+
+function handleGetCurrentChild (childId) {
+  historicStore.getCurrentChild(childId).catch(err => {
+    toast.error('Erro ao carregar esta criança.')
+  })
 }
 </script>
 
