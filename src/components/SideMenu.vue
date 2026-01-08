@@ -31,11 +31,18 @@
 </template>
 
 <script setup lang="ts">
-interface ISideMeniProps {
-  childsList: []
+interface IChield {
+  id: number
+  name: string
 }
 
-const { childsList = [] } = defineProps()
+interface ISideMeniProps {
+  childsList: IChield[]
+}
+
+const {
+  childsList = []
+} = defineProps<ISideMeniProps>()
 </script>
 
 <style lang="scss">

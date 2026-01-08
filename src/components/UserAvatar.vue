@@ -30,15 +30,15 @@ const {
 } = defineProps<IUserAvatarProps>()
 
 const nameInitials = computed(() => {
-  if (name && name.trim()) {
-    let split = name.split(' ').filter(Boolean)
-    if (split.length > 1) {
-      return split[0].substring(0, 1) + split[split.length - 1].substring(0, 1)
-    } else if (split.length === 1) {
-      return split[0].substring(0, 2)
-    }
+  if (!name?.trim()) return ''
+
+  let split = name.split(' ').filter(Boolean)
+
+  if (split.length > 1) {
+    return split[0].substring(0, 1) + split[split.length - 1].substring(0, 1)
+  } else if (split.length === 1) {
+    return split[0].substring(0, 2)
   }
-  return ''
 })
 </script>
 

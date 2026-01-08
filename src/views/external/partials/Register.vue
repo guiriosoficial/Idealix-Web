@@ -1,19 +1,19 @@
 <template>
   <article>
-    <v-form
+    <IdxForm
       class="register-view"
       novalidate
       @submit.prevent="handleCreateAccount">
       <h1 class="external-view__title">Cadastre-se</h1>
 
-        <v-text-field
+        <IdxTextField
           v-model="registerForm.name"
           id="name"
           name="name"
           label="Nome"
           autocomplete="name" />
 
-        <v-text-field
+        <IdxTextField
           v-model="registerForm.email"
           id="email"
           label="E-mail"
@@ -21,7 +21,7 @@
           type="email"
           autocomplete="email" />
 
-        <v-text-field
+        <IdxTextField
           v-model="registerForm.password"
           id="password"
           label="Senha"
@@ -29,18 +29,18 @@
           type="password" />
 
       <div class="external-view__submit">
-        <v-checkbox
+        <IdxCheckbox
           v-model="registerForm.accepted"
         >
           <template v-slot:label>
             Li e aceito os <a @click="userTermsDialogVisible = true">Termos de Uso</a>
           </template>
-        </v-checkbox>
-        <v-btn
+        </IdxCheckbox>
+        <IdxBtn
           class="md-raised md-primary"
           type="submit">
           Cadastrar
-        </v-btn>
+        </IdxBtn>
       </div>
 
       <span class="external-view__switch-link">
@@ -49,24 +49,24 @@
           Clique aqui para acessar
         </router-link>
       </span>
-    </v-form>
+    </IdxForm>
 
-    <v-dialog v-model="userTermsDialogVisible">
-      <v-card title="Termos de uso" text="Mussum Ipsum, cacilds vidis litro abertis. Nec orci ornare consequat. Praesent lacinia ultrices consectetur. Sed non ipsum felis. Casamentiss faiz malandris se pirulitá. Aenean aliquam molestie leo, vitae iaculis nisl. Praesent vel viverra nisi. Mauris aliquet nunc non turpis scelerisque, eget.
+    <IdxDialog v-model="userTermsDialogVisible">
+      <IdxCard title="Termos de uso" text="Mussum Ipsum, cacilds vidis litro abertis. Nec orci ornare consequat. Praesent lacinia ultrices consectetur. Sed non ipsum felis. Casamentiss faiz malandris se pirulitá. Aenean aliquam molestie leo, vitae iaculis nisl. Praesent vel viverra nisi. Mauris aliquet nunc non turpis scelerisque, eget.
           Tá deprimidis, eu conheço uma cachacis que pode alegrar sua vidis. Manduma pindureta quium dia nois paga. Suco de cevadiss deixa as pessoas mais interessantis. Quem manda na minha terra sou euzis!
           Mé faiz elementum girarzis, nisi eros vermeio. Todo mundo vê os porris que eu tomo, mas ninguém vê os tombis que eu levo! Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis. Quem num gosta di mé, boa gentis num é.
           Per aumento de cachacis, eu reclamis. Mauris nec dolor in eros commodo tempor. Aenean aliquam molestie leo, vitae iaculis nisl. Vehicula non. Ut sed ex eros. Vivamus sit amet nibh non tellus tristique interdum. Suco de cevadiss, é um leite divinis, qui tem lupuliz, matis, aguis e fermentis.">
-        <template v-slot:actions>
+        <template #actions>
           <v-spacer />
 
-          <v-btn
+          <IdxBtn
             class="md-primary"
             @click="userTermsDialogVisible = false">
             Ok
-          </v-btn>
+          </IdxBtn>
         </template>
-      </v-card>
-    </v-dialog>
+      </IdxCard>
+    </IdxDialog>
   </article>
 </template>
 
@@ -75,34 +75,40 @@ import { useAccountStore } from '@/store/account'
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toast-notification'
+import IdxBtn from "@/components/commons/IdxBtn.vue";
+import IdxTextField from "@/components/commons/IdxTextField.vue";
+import IdxForm from "@/components/commons/IdxForm.vue";
+import IdxCheckbox from "@/components/commons/IdxCheckbox.vue";
+import IdxCard from "@/components/commons/IdxCard.vue";
+import IdxDialog from "@/components/commons/IdxDialog.vue";
 
 const accountStore = useAccountStore()
 const router = useRouter()
 const toast = useToast()
 
-const userTermsDialogVisible = ref(false)
-const registerForm = reactive({
+const initialFormState = () => ({
   name: '',
   email: '',
   password: '',
   accepted: false
 })
 
-function handleCreateAccount () {
-  accountStore.createAccount(registerForm)
-    .then(() => {
-      Object.assign(registerForm, {
-        name: '',
-        email: '',
-        password: '',
-        accepted: false
-      })
-      toast.success('Sua conta foi criada')
-      router.push('/login')
-    })
-    .catch(() => {
-      toast.error('Ops! Houve um erro ao criar sua conta')
-    })
+const userTermsDialogVisible = ref(false)
+const registerForm = reactive(initialFormState())
+
+async function handleCreateAccount () {
+  try {
+    await accountStore.createAccount(registerForm)
+    resetForm()
+    await router.push('/login')
+    toast.success('Sua conta foi criada')
+  } catch {
+    toast.error('Ops! Houve um erro ao criar sua conta')
+  }
+}
+
+function resetForm () {
+  Object.assign(registerForm, initialFormState())
 }
 </script>
 

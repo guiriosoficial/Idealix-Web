@@ -29,7 +29,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 interface IProfileHeaderProps {
-  responsibleData: Object
+  responsibleData: string
 }
 
 const router = useRouter()
@@ -38,7 +38,7 @@ const accountStore = useAccountStore()
 const { responsibleData } = defineProps<IProfileHeaderProps>()
 
 const mainNames = computed(() => {
-  const fullName = responsibleData.name.split(' ')
+  const fullName = responsibleData.split(' ')
   return `${fullName[0]} ${fullName[fullName.length - 1]}`
 })
 

@@ -8,64 +8,89 @@
     />
 
     <main class="main-container__content">
-      <ProfileHeader :responsible-data="responsibleData" />
+      <ProfileHeader :responsible-data="responsibleData.name" />
 
       <transition name="fade">
         <router-view/>
       </transition>
+
+      <v-speed-dial location="top center" transition="fade-transition">
+        <template v-slot:activator="{ props: activatorProps }">
+          <v-fab class="main-container__speed-dial" size="large" v-bind="activatorProps" icon="mdi-plus" />
+        </template>
+
+        <!--      child care-->
+        <v-btn
+            icon="mdi-baby-face-outline"
+            key="chield"
+            v-tooltip:left="'Adicionar Criança'"
+            @click="openAddChildDialog"
+        />
+        <v-btn
+            icon="mdi-chart-timeline-variant"
+            key="point"
+            v-tooltip:left="'Inserir Marco'"
+            @click="openAddPointDialog"
+        />
+      </v-speed-dial>
     </main>
 
-    <v-dialog
+    <IdxDialog
       v-model="addChildDialogVisibel"
       max-width="500"
     >
-      <v-card title="Adicionar uma criança">
-        <v-form
+      <IdxCard title="Adicionar uma criança">
+        <IdxForm
             class="main-container__dialogs--form"
             @submit.prevent="handeAddChild">
           <v-card-text>
-            <v-text-field label="Nome" append-icon="mood" v-model="newChildForm.name" />
-            <v-select
-                v-model="newChildForm.gender"
-                :items="[{ value: 'm', label: 'É um Menino' }, { value: 'f', label: 'É uma Menina' }]"
-                id="gender"
-                name="gender"
-                item-title="label"
-                item-value="value"
-                label="Genero"
-                prepend-inner-icon="mdi-gender-male-female"
+            <IdxTextField
+              label="Nome"
+              append-icon="mood"
+              v-model="newChildForm.name"
             />
-            <v-text-field
+            <v-select
+              v-model="newChildForm.gender"
+              :items="[{ value: 'm', label: 'É um Menino' }, { value: 'f', label: 'É uma Menina' }]"
+              id="gender"
+              name="gender"
+              item-title="label"
+              item-value="value"
+              label="Genero"
+              prepend-inner-icon="mdi-gender-male-female"
+            />
+            <IdxTextField
                 label="Data de nascimento"
                 type="date"
                 v-model="newChildForm.birthday"
                 id="birthday"
-                name="birthday">
-            </v-text-field>
+                name="birthday"
+            />
           </v-card-text>
           <v-card-actions>
-            <v-btn
+            <IdxBtn
                 class="md-primary"
-                @click="updateAddChildDialogVisibel(false)">
+                @click="updateAddChildDialogVisibel(false)"
+            >
               Cancelar
-            </v-btn>
-            <v-btn
-                class="md-primary md-raised"
-                type="submit"
+            </IdxBtn>
+            <IdxBtn
+              class="md-primary md-raised"
+              type="submit"
             >
               Adicionar
-            </v-btn>
+            </IdxBtn>
           </v-card-actions>
-        </v-form>
-      </v-card>
-    </v-dialog>
+        </IdxForm>
+      </IdxCard>
+    </IdxDialog>
 
-    <v-dialog
+    <IdxDialog
       v-model="addPointDialogVisibel"
       max-width="500"
     >
-      <v-card title="Adicionar um marco">
-        <v-form
+      <IdxCard title="Adicionar um marco">
+        <IdxForm
             class="main-container__dialogs--form"
             @submit.prevent="handleAddPoint">
 
@@ -105,48 +130,25 @@
               v-number="numberMask"
               id="height"
               name="height" />
-          <v-text-field
+          <IdxTextField
               type="date"
               label="Data da medição"
               v-model="newPointForm.measurementDate"
               id="date"
               name="date"
           />
-          <v-card-text>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn
-                @click="updateAddPointDialogVisibel(false)">
+          <template #text></template>
+          <template #actions>
+            <IdxBtn @click="updateAddPointDialogVisibel(false)">
               Cancelar
-            </v-btn>
-            <v-btn
-                type="submit">
+            </IdxBtn>
+            <IdxBtn type="submit">
               Adicionar
-            </v-btn>
-          </v-card-actions>
-        </v-form>
-      </v-card>
-    </v-dialog>
-
-    <v-speed-dial location="top center" transition="fade-transition">
-      <template v-slot:activator="{ props: activatorProps }">
-        <v-fab size="large" v-bind="activatorProps" icon="mdi-plus" />
-      </template>
-
-<!--      child care-->
-      <v-btn
-          icon="mdi-baby-face-outline"
-          key="chield"
-          v-tooltip:left="'Adicionar Criança'"
-          @click="openAddChildDialog"
-      />
-      <v-btn
-          icon="mdi-chart-timeline-variant"
-          key="point"
-          v-tooltip:left="'Inserir Marco'"
-          @click="openAddPointDialog"
-      />
-    </v-speed-dial>
+            </IdxBtn>
+          </template>
+        </IdxForm>
+      </IdxCard>
+    </IdxDialog>
   </div>
 </template>
 
@@ -159,13 +161,22 @@ import { useChildsStore } from '@/store/childs'
 import { useAppStore } from '@/store'
 import { useHistoricStore } from '@/store/historic'
 import { reactive, onBeforeMount } from 'vue'
-
+import { useRoute, useRouter } from 'vue-router'
+import { useToast } from 'vue-toast-notification'
+import IdxDialog from "@/components/commons/IdxDialog.vue";
+import IdxCard from "@/components/commons/IdxCard.vue";
+import IdxForm from "@/components/commons/IdxForm.vue";
+import IdxBtn from "@/components/commons/IdxBtn.vue";
+import IdxTextField from "@/components/commons/IdxTextField.vue";
 
 const newChildForm = reactive({ name: '', gender: '', birthday: new Date() })
 const newPointForm = reactive({ childId: '', weight: null, height: null, measurementDate: new Date() })
 const numberMask = reactive({ decimal: ',', thousands: '.', prefix: '', suffix: '', precision: 2, masked: false })
 
 const number = VMoney
+const toast = useToast()
+const router = useRouter()
+const route = useRoute()
 
 const historicStore = useHistoricStore()
 const {
@@ -199,45 +210,45 @@ onBeforeMount(() => {
 
 
 function openAddChildDialog () {
-  this.newChildForm = { name: '', gender: '', birthday: '' }
-  this.updateAddChildDialogVisibel(true)
+  Object.assign(newChildForm, { name: '', gender: '', birthday: '' })
+  updateAddChildDialogVisibel(true)
 }
 
 function handeAddChild () {
-  const { name, gender, birthday } = this.newChildForm
-  this.addNewChild({ name, gender, birthday: new Date(birthday).getTime() })
-    .then(res => {
-      this.$toast.success('Criança adicionada com sucesso.')
-      this.$router.push(`/dashboard/${res.id}`)
-      this.updateAddChildDialogVisibel(false)
+  const { name, gender, birthday } = newChildForm
+  addNewChild({ name, gender, birthday: new Date(birthday).getTime() })
+    .then((res) => {
+      toast.success('Criança adicionada com sucesso.')
+      router.push(`/dashboard/${res.id}`)
+      updateAddChildDialogVisibel(false)
     })
-    .catch(() => this.$toast.error('Erro ao adicionar criança.'))
+    .catch(() => toast.error('Erro ao adicionar criança.'))
 }
 
 function openAddPointDialog () {
-  this.newPointForm = {
-    childId: this.$route.params.id || '',
+  Object.assign(newPointForm, {
+    childId: route.params.id || '',
     weight: null,
     height: null,
     measurementDate: new Date()
-  }
-  this.updateAddPointDialogVisibel(true)
+  })
+  updateAddPointDialogVisibel(true)
 }
 
 function  handleAddPoint () {
-  const { childId, measurementDate, height, weight } = this.newPointForm
-  this.addNewPoint({
+  const { childId, measurementDate, height, weight } = newPointForm
+  addNewPoint({
     childId,
-    height: +(height.toString().replace(',', '.')),
-    weight: +(weight.toString().replace(',', '.')),
+    height: +(String(height).replace(',', '.')),
+    weight: +(String(weight).replace(',', '.')),
     measurementDate: new Date(measurementDate).getTime()
   })
-    .then(res => {
-      this.$toast.success('Marco adicionado com sucesso.')
-      this.$router.push(`/dashboard/${res.id_child}`)
-      this.updateAddPointDialogVisibel(false)
+    .then((res) => {
+      toast.success('Marco adicionado com sucesso.')
+      router.push(`/dashboard/${res.id_child}`)
+      updateAddPointDialogVisibel(false)
     })
-    .catch(() => this.$toast.error('Erro ao adicionar marco.'))
+    .catch(() => toast.error('Erro ao adicionar marco.'))
 }
 </script>
 
@@ -254,6 +265,12 @@ function  handleAddPoint () {
     flex: 1;
     display: flex;
     flex-direction: column;
+
+    .main-container__speed-dial {
+      position: absolute;
+      bottom: 32px;
+      right: 32px;
+    }
   }
 }
 

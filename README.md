@@ -26,5 +26,6 @@ npm run build
 
 ## TODO
 - Abstrair Componentes
-- Implementar Typescript
+- Implementar Tipos
+- Refatorar Logicas
 - Criar Testes

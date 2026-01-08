@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-view">
     <div class="dashboard-view__main-cards">
-      <v-card class="dashboard-view__details-card">
+      <IdxCard class="dashboard-view__details-card">
         <UserAvatar
           :name="currentChild.name"
           icon="person"
@@ -12,9 +12,9 @@
           <h2>{{ currentChildMasked.name }}</h2>
           <div>{{ currentChildMasked.age }} - {{ currentChildMasked.gender }}</div>
         </div>
-      </v-card>
+      </IdxCard>
 
-      <v-card class="dashboard-view__details-card">
+      <IdxCard class="dashboard-view__details-card">
         <UserAvatar
           icon="favorite"
           size="md-large"
@@ -23,9 +23,9 @@
           <h2>Status Atual</h2>
           <div>{{ currentChildMasked.status }}</div>
         </div>
-      </v-card>
+      </IdxCard>
 
-      <v-card class="dashboard-view__details-card">
+      <IdxCard class="dashboard-view__details-card">
         <UserAvatar
           icon="bubble_chart"
           size="md-large"
@@ -34,10 +34,10 @@
           <h2>Último marco ({{ currentChildMasked.measurementDate }})</h2>
           <div>{{ currentChildMasked.height }} - {{ currentChildMasked.weight }} ({{ currentChildMasked.imc }})</div>
         </div>
-      </v-card>
+      </IdxCard>
     </div>
 
-    <v-card class="dashboard-view__chart elevation">
+    <IdxCard class="dashboard-view__chart elevation">
       <v-empty-state
         v-if="!childsList.length || routerIdParam === 'home' || !currentChild.historic.length"
         :title="emptyStateData.label"
@@ -45,12 +45,12 @@
         :icon="emptyStateData.icon"
         :class="emptyStateData.class"
         class="dashboard-view__empty-state">
-        <v-btn
+        <IdxBtn
           v-if="emptyStateData.showButton"
           class="md-primary md-raised"
           @click="emptyStateData.buttonAction === 'updateAddChildDialogVisibel' ? updateAddChildDialogVisibel(true) : updateAddPointDialogVisibel(true)">
           {{ emptyStateData.buttonText }}
-        </v-btn>
+        </IdxBtn>
       </v-empty-state>
 
       <HistoryChart
@@ -59,7 +59,7 @@
         :current-historic="currentChild.historic"
         :styles="chartStyles"
       />
-    </v-card>
+    </IdxCard>
   </div>
 </template>
 
@@ -72,6 +72,8 @@ import { computed, onBeforeMount, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useToast } from 'vue-toast-notification'
 import { storeToRefs } from "pinia";
+import IdxCard from "@/components/commons/IdxCard.vue";
+import IdxBtn from "@/components/commons/IdxBtn.vue";
 
 const historicStore = useHistoricStore()
 const childsStore = useChildsStore()
@@ -88,8 +90,8 @@ const {
 const { currentChild } = storeToRefs(historicStore)
 
 const currentChildMasked = computed(() => {
-  const { name, age, gender, status, height, weight, imc, measurementDate } = currentChild
-  if (!currentChild.id) return {}
+  if (!currentChild.value.id) return {}
+  const { name, age, gender, status, height, weight, imc, measurementDate } = currentChild.value
 
   return {
     name: name || '-',
@@ -114,7 +116,7 @@ const emptyStateData = computed(() => {
       buttonAction: 'updateAddChildDialogVisibel',
       showButton: true
     }
-  } else if (routerIdParam === 'home') {
+  } else if (routerIdParam.value === 'home') {
     return {
       icon: 'child_care',
       label: 'Bem vindo!',
@@ -122,7 +124,7 @@ const emptyStateData = computed(() => {
       showButton: false,
       class: 'md-primary'
     }
-  } else if (currentChild && !currentChild.historic?.length && childsList.map(c => c.id).includes(routerIdParam.value)) {
+  } else if (currentChild && !currentChild.value.historic?.length && childsList.map(c => c.id).includes(routerIdParam.value)) {
     return {
       icon: 'outlined_flag',
       label: 'Adicione o primeiro marco',
@@ -135,16 +137,16 @@ const emptyStateData = computed(() => {
   return { icon: 'cancel_presentation', label: 'Ops!', description: 'Erro ao carregar dados.', showButton: false }
 })
 
-watch(() => routerIdParam, (currentId) => {
-  handleGetCurrentChild(currentId.value)
+watch(() => routerIdParam.value, (currentId) => {
+  handleGetCurrentChild(currentId)
 })
 
 onBeforeMount(() => {
   handleGetCurrentChild(routerIdParam.value)
 })
 
-function handleGetCurrentChild (childId) {
-  historicStore.getCurrentChild(childId).catch(err => {
+function handleGetCurrentChild (childId: string) {
+  historicStore.getCurrentChild(childId).catch((err) => {
     toast.error('Erro ao carregar esta criança.')
   })
 }
