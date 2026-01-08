@@ -154,7 +154,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../../../styles/variables.scss';
+@use '../../../styles/variables' as *;
 
 .dashboard-view {
   padding: 0px 20px 20px 20px;
@@ -172,7 +172,7 @@ export default {
       justify-content: flex-start;
       padding: 16px;
       margin-right: 20px;
-      border-radius: $--border-radius;
+      border-radius: $border-radius;
       &:last-child { margin-right: 0px; }
       &:nth-child(1) .dashboard-view__details-icon { background-color: #621ba2; }
       &:nth-child(2) .dashboard-view__details-icon { background-color: #d44eb7; }
@@ -180,7 +180,7 @@ export default {
 
       .dashboard-view__details-icon {
         margin-right: 16px;
-        .md-icon, span { color: $--white !important; }
+        .md-icon, span { color: $white !important; }
       }
 
       .dashboard-view__details-text {
@@ -193,7 +193,7 @@ export default {
     flex: 1;
     padding: 16px;
     margin-top: 20px;
-    border-radius: $--border-radius;
+    border-radius: $border-radius;
     display: flex;
     align-items: center;
 

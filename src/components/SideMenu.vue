@@ -43,7 +43,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../styles/variables.scss';
+@use '../styles/variables' as *;
 
 .sidemenu-component {
   display: flex;
@@ -56,7 +56,7 @@ export default {
   .sidemenu-component__container {
     z-index: 10;
     width: 300px;
-    background: linear-gradient(to right bottom, $--primary-color, $--secondary-color);
+    background: linear-gradient(to right bottom, $primary-color, $secondary-color);
 
     .sidemenu-component__title {
       height: 24px;
@@ -64,7 +64,7 @@ export default {
       align-items: center;
       margin: 30px 16px;
       font-weight: 400;
-      color: $--white;
+      color: $white;
     }
 
     .sidemenu-component__menu-items {
@@ -74,11 +74,11 @@ export default {
       background-color: transparent !important;
 
       .md-list {
-        &-item-content * {color: $--white !important;}
+        &-item-content * {color: $white !important;}
         &-item-text {display: block; text-overflow: ellipsis; text-transform: capitalize;}
       }
 
-      .md-subheader {color: $--white; opacity: 0.5;}
+      .md-subheader {color: $white; opacity: 0.5;}
       &::-webkit-scrollbar {width: 8px; background: transparent;}
       &::-webkit-scrollbar-thumb {border-radius: 4px; background-color: #FAFAFA20;}
     }

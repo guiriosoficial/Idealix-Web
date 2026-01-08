@@ -1,8 +1,8 @@
 // IMPORTS
+@use 'variables';
+@use 'overrides';
 @import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
-@import 'variables.scss';
-@import 'overrides.scss';
 
 // RESETS
 #app {

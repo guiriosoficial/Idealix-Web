@@ -28,25 +28,25 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../../styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .external-view {
   width: 100vw;
   height: 100vh;
   display: flex;
-  background-color: $--background;
+  background-color: $background;
 
   .external-view__container-logo {
     width: 50%;
     height: 100%;
-    background: linear-gradient(to right bottom, $--primary-color, $--secondary-color);
+    background: linear-gradient(to right bottom, $primary-color, $secondary-color);
 
     .external-view__logo {
       height: 24px;
       display: flex;
       align-items: center;
       margin: 30px 16px;
-      color: $--white;
+      color: $white;
       font-weight: 400;
     }
   }

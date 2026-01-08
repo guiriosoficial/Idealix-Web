@@ -50,8 +50,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../styles/variables.scss';
-
 .useravatar-component {
   margin-right: 8px;
   margin-left: 0;

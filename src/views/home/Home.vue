@@ -238,13 +238,13 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../../styles/variables.scss';
+@use '../../styles/variables' as *;
 
 .main-container {
   width: 100vw;
   height: 100vh;
   display: flex;
-  background-color: $--background;
+  background-color: $background;
 
   .main-container__content {
     flex: 1;
@@ -255,7 +255,7 @@ export default {
 
 .main-container__dialogs {
   .md-dialog-container {
-    border-radius: $--border-radius;
+    border-radius: $border-radius;
     width: 400px;
     padding: 8px;
   }
