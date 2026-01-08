@@ -6,6 +6,7 @@ import vuetify from '@/plugins/vuetify'
 import axios from '@/plugins/axios'
 
 import VueToast from 'vue-toast-notification'
+import 'vue-toast-notification/dist/theme-sugar.css'
 import VueMoney from 'v-money3'
 import Vuelidate from 'vuelidate'
 
