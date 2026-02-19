@@ -1,0 +1,1 @@
+export { default as IdxMenu } from './IdxMenu.vue'

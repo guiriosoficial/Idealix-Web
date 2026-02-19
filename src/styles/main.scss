@@ -13,4 +13,11 @@
   overflow: hidden;
 }
 
+a {
+  color: variables.$primary-color;
+  &:hover {
+    color: variables.$secondary-color;
+  }
+}
+
 * {font-family: 'Montserrat', sans-serif;}

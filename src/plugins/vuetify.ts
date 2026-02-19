@@ -5,7 +5,7 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 
-const myCustomTheme = {
+const idxTheme = {
   dark: false,
   colors: {
     background: '#fafafa',
@@ -26,10 +26,8 @@ export default createVuetify({
   components,
   directives,
   theme: {
-    defaultTheme: 'myCustomTheme',
-    themes: {
-      myCustomTheme
-    }
+    defaultTheme: 'idxTheme',
+    themes: { idxTheme }
   }
   // icons: {
   //   defaultSet: 'mdi',

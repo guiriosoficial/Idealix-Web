@@ -1,8 +1,8 @@
 <template>
   <IdxForm
-    class="login-view"
+    class="login-view external-view__content"
     novalidate
-    @submit.prevent="doLogin"
+    @submit.prevent="handleLogin"
   >
     <h1 class="external-view__title">Login</h1>
 
@@ -22,7 +22,7 @@
 
     <div class="external-view__submit">
       <IdxCheckbox
-        v-model="loginForm.rememberme"
+        v-model="loginForm.rememberMe"
         label="Lembre-se de mim"
       />
       <IdxBtn
@@ -35,7 +35,9 @@
 
     <span class="external-view__switch-link">
       Não possui uma conta?
-      <router-link to="/register">Cadastre-se agora mesmo</router-link>
+      <a @click="goToRegister">
+        Cadastre-se agora mesmo
+      </a>
     </span>
   </IdxForm>
 </template>
@@ -45,29 +47,47 @@ import { useAccountStore } from '@/store/account'
 import { useRouter } from 'vue-router'
 import { reactive } from 'vue'
 import { useToast } from 'vue-toast-notification'
-import IdxBtn from '@/components/commons/IdxBtn.vue'
-import IdxTextField from '@/components/commons/IdxTextField.vue'
-import IdxCheckbox from '@/components/commons/IdxCheckbox.vue'
-import IdxForm from '@/components/commons/IdxForm.vue'
+import {IdxBtn} from '@/components/commons/IdxBtn'
+import {IdxTextField} from '@/components/commons/IdxTextField'
+import {IdxCheckbox} from '@/components/commons/IdxCheckbox'
+import {IdxForm} from '@/components/commons/IdxForm'
 
-const accounteStore = useAccountStore()
+const accountStore = useAccountStore()
 const router = useRouter()
 const toast = useToast()
 
-const initialFormState = () => ({
-  email: '',
-  password: '',
-  rememberme: false
-})
+// TODO: Move to Type File
+class LoginForm {
+  email = ''
+  password = ''
+  rememberMe = false
+}
 
-const loginForm = reactive(initialFormState())
+const loginForm = reactive(createLoginForm())
 
-async function doLogin () {
+async function handleLogin () {
   try {
-    await accounteStore.setLoggedPerson(loginForm)
-    await router.push('dashboard')
+    await accountStore.setLoggedPerson(loginForm)
+    resetLoginForm()
+    goToDashboard()
   } catch {
     toast.error('Ops! Houve uma falha ao fazer login')
   }
+}
+
+function resetLoginForm () {
+  Object.assign(loginForm, createLoginForm())
+}
+
+function createLoginForm () {
+  return new LoginForm()
+}
+
+function goToRegister () {
+  router.push({ name: 'register' })
+}
+
+function goToDashboard() {
+  router.push({ name: 'dashboard' })
 }
 </script>

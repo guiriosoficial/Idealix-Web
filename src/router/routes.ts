@@ -1,8 +1,8 @@
-const HomeView = () => import('@/views/home/Home.vue')
+const HomeView = () => import('@/views/home/HomeView.vue')
 const DashboardView = () => import('@/views/home/partials/Dashboard.vue')
-const LoginView = () => import('@/views/external/partials/Login.vue')
-const RegisterView = () => import('@/views/external/partials/Register.vue')
-const ExternalView = () => import('@/views/external/External.vue')
+const LoginView = () => import('@/views/external/partials/LoginForm.vue')
+const RegisterView = () => import('@/views/external/partials/RegisterForm.vue')
+const ExternalView = () => import('@/views/external/ExternalView.vue')
 
 export const routes = [
   {

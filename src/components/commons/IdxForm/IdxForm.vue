@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { VForm } from 'vuetify/components'
-import type { SubmitEventPromise } from 'vuetify/lib/composables/form'
 
 interface IIdxFormProps {
 
 }
 
 interface IIdxFormEmits {
-  (e: 'submit', event: SubmitEventPromise): void
+  (e: 'submit', event: SubmitEvent): void
 }
 
 const {

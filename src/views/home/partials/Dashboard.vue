@@ -72,8 +72,8 @@ import { computed, onBeforeMount, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useToast } from 'vue-toast-notification'
 import { storeToRefs } from "pinia";
-import IdxCard from "@/components/commons/IdxCard.vue";
-import IdxBtn from "@/components/commons/IdxBtn.vue";
+import { IdxCard} from "@/components/commons/IdxCard"
+import { IdxBtn} from "@/components/commons/IdxBtn"
 
 const historicStore = useHistoricStore()
 const childsStore = useChildsStore()

@@ -1,0 +1,1 @@
+export { default as IdxBtn } from './IdxBtn.vue'

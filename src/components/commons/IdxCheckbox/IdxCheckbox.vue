@@ -16,6 +16,15 @@ const {
   <VCheckbox
     v-model="modelValue"
     :label="label"
-  />
+    color="primary"
+    hide-details
+  >
+    <template
+      v-if="$slots.label"
+      #label
+    >
+      <slot name="label" />
+    </template>
+  </VCheckbox>
 </template>
 >

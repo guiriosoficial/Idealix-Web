@@ -17,7 +17,9 @@ const {
     :title="title"
     :text="text"
   >
-    <slot />
+    <VCardText v-if="$slots.default">
+      <slot />
+    </VCardText>
     <VCardActions v-if="$slots.actions">
       <slot name="actions" />
     </VCardActions>

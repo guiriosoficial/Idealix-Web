@@ -1,13 +1,20 @@
 <template>
   <v-avatar
     :class="size"
-    class="useravatar-component">
+    class="useravatar-component"
+  >
     <img
       v-if="picture"
       :src="picture"
-      alt="People">
-    <span v-else-if="nameInitials">{{ nameInitials.toUpperCase() }}</span>
-    <v-icon v-else-if="icon" :icon="icon" />
+      alt="People"
+    >
+    <span v-else-if="nameInitials">
+      {{ nameInitials.toUpperCase() }}
+    </span>
+    <v-icon
+      v-else-if="icon"
+      :icon="icon"
+    />
     <span v-else>-</span>
   </v-avatar>
 </template>

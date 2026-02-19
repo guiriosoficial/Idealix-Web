@@ -1,0 +1,1 @@
+export { default as IdxListItem } from './IdxListItem.vue'

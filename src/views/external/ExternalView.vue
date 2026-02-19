@@ -65,7 +65,6 @@ onBeforeMount(() => {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        .md-button { margin: 0; }
       }
 
       .external-view__switch-link {

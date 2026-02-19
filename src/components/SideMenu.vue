@@ -11,7 +11,7 @@
     </label>
     <div class="sidemenu-component__container elevation">
       <h1 class="sidemenu-component__title">iDealix</h1>
-      <v-list class="sidemenu-component__menu-items">
+      <IdxList class="sidemenu-component__menu-items">
         <v-list-subheader inset>Ações</v-list-subheader>
         <v-list-item title="Adicionar Criança" prepend-icon="mdi-baby-face-outline" @click="$emit('open-add-child-dialog')" />
         <v-list-item title="Inserir Marco" prepend-icon="mdi-chart-timeline-variant" @click="$emit('open-add-point-dialog')" />
@@ -25,12 +25,14 @@
           </template>
           <span class="md-list-item-text">{{ child.name }}</span>
         </v-list-item>
-      </v-list>
+      </IdxList>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import {IdxList} from "@/components/commons/IdxList";
+
 interface IChield {
   id: number
   name: string

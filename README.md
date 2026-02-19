@@ -29,3 +29,5 @@ npm run build
 - Implementar Tipos
 - Refatorar Logicas
 - Criar Testes
+- Persistent Login (With Cookies. Redirect to Dashboard if Enter in '/login', Loegged In)
+- Abstrair Toast
